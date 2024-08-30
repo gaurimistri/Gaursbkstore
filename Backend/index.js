@@ -19,6 +19,8 @@ try {
   mongoose.connect(URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    ssl: true, // Ensure SSL is enabled
+    sslValidate: true, // Validate server certificate
   });
   console.log("Connected to mongoDB");
 } catch (error) {
@@ -27,7 +29,7 @@ try {
 
 // Define routes
 app.use("/book", bookRoute);
-app.use("/user",userRoute)
+app.use("/user", userRoute)
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
