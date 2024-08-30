@@ -15,17 +15,16 @@ const PORT = process.env.PORT || 4001;
 const URI = process.env.MONGO_URI;
 
 // Connect to MongoDB
-try {
-  mongoose.connect(URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    ssl: true, // Ensure SSL is enabled
-    sslValidate: true, // Validate server certificate
-  });
-  console.log("Connected to mongoDB");
-} catch (error) {
-  console.log("Error:", error);
-}
+mongoose.connect(URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => {
+  console.log("Connected to MongoDB");
+})
+.catch((error) => {
+  console.error("Error connecting to MongoDB:", error);
+});
 
 // Define routes
 app.use("/book", bookRoute);
