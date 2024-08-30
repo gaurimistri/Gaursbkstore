@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from "react-hook-form";
-
+import axios, { toFormData } from "axios";
+import toast from "react-hot-toast";
 function Login() {
     const {
         register,
@@ -9,15 +10,38 @@ function Login() {
         formState: { errors },
     } = useForm();
 
-    const onSubmit = (data) => {
-        console.log(data); // This will log form data to the console
-        // You might want to add functionality to close the dialog here if needed
+    const onSubmit =async (data) => {
+        const userInfo = {
+            email: data.email,
+            password: data.password
+        }
+        await axios.post("http://localhost:4001/user/login", userInfo)
+            .then((res) => {
+                console.log(res.data);
+                if (res.data) {
+                  toast.success("Logged in Successfully");
+                  document.getElementById('my_modal_3').close();
+                  setTimeout(()=>
+                  { 
+                    window.location.reload();
+                    localStorage.setItem("Users",JSON.stringify(res.data.user));
+                  },1000 )
+
+                }
+           
+            }).catch((error) => {
+                if(error.response)
+                {
+                    toast.error("Error :" + error.response.data.message);
+                    setTimeout(()=>  {},2000);
+                }
+            });
     };
 
     return (
         <div>
-            <dialog id="my_modal_3" className="modal flex items-center justify-center">
-                <div className="modal-box flex flex-col items-center">
+            <dialog id="my_modal_3" className="  modal flex items-center justify-center">
+                <div className="dark:bg-slate-700 dark:text-white modal-box flex flex-col items-center">
                     <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md">
                         <button type="button" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={() => document.getElementById('my_modal_3').close()}>✕</button>
                         <h3 className="font-bold text-lg text-pink-500 text-center">Login</h3>
